@@ -9,7 +9,7 @@ public class RunEntry {
     private boolean _dnf =false;
     public float startTime;     // moment the run as started (server wise) in milli, only use to estimate run time during the run
     public final ArrayDeque<Split> splits=new ArrayDeque<>();
-    public Split actualSplit;
+    public Split actualSplit;       // when a run is finish, the final time will be the actual split time
     public final GameEntry game;
 
     public RunEntry(Player player,GameEntry game){
@@ -67,6 +67,7 @@ public class RunEntry {
         if(newSplit.flagIndex()== game.finalFlagIndex()){
             _isFinish=true;
             _isRunning=false;
+            actualSplit=newSplit;
         }
 
         return true;
