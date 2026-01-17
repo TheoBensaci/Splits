@@ -1,7 +1,8 @@
 package ch.heigvd;
 
-import ch.heigvd.data.Flag;
-import ch.heigvd.data.GameEntry;
+import ch.heigvd.data.*;
+import ch.heigvd.web.GameController;
+import ch.heigvd.web.PlayerController;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.BadRequestResponse;
@@ -14,71 +15,50 @@ public class Main {
     public static int PORT = 8000;
 
     public static void main(String[] args) {
-        GameEntry defaultGame=new GameEntry("Borris",7,
-                new Flag("sword",0),
-                new Flag("magic burst",0),
-                new Flag("fast travel",0),
-                new Flag("sword dash",0),
-                new Flag("master key",1),
-                new Flag("ascension",2),
-                new Flag("gg ?",3)
-        );
+        /*
+        String token = PlayerBase.createNewPlayer("test");
+        int index = defaultGame.createNewRun();
+        Run run = defaultGame.getRun(index);
+        run.createRunEntry(token);
+        defaultGame.getRun(index).startRun();
+        run.putSplit(token,0, (float)(System.currentTimeMillis()+66000f));
 
+        run.putSplit(token,1, (float)(System.currentTimeMillis()+76000f));
+
+        run.putSplit(token,5, (float)(System.currentTimeMillis()+86000f));
+
+
+        run.putSplit(token,6, (float)(System.currentTimeMillis()+106000f));*/
+
+        GameController gc = new GameController();
+        PlayerController pc = new PlayerController();
+        /*
         Javalin app = Javalin.create(config -> {
                     config.staticFiles.add("/public", Location.CLASSPATH);
-                    config.router.apiBuilder(() -> {
-                        path("/api", () -> {
-                            /*
-                            get(UserController::getAllUsers);
-                            post(UserController::createUser);
-                            path("/{id}", () -> {
-                                get(UserController::getUser);
-                                patch(UserController::updateUser);
-                                delete(UserController::deleteUser);
-                            });
-                            ws("/events", UserController::webSocketEvents);
-                            */
-                        });
-                    });
                 }
-        );
+        );*/
 
-        app.get(
-                "/api",
-                ctx ->
-                        ctx.result(
-                                "Hello, world from a GET request method with a `HttpStatus.OK` response status!"));
-        app.post(
-                "/api",
-                ctx ->
-                        ctx.result(
-                                        "Hello, world from a POST request method with a `HttpStatus.CREATED` response status!")
-                                .status(HttpStatus.CREATED));
-        app.patch(
-                "/api",
-                ctx ->
-                        ctx.result(
-                                        "Hello, world from a PATCH request method with a `HttpStatus.OK` response status!")
-                                .status(HttpStatus.OK));
-        app.delete(
-                "/api",
-                ctx ->
-                        ctx.result(
-                                        "Hello, world from a DELETE request method with a `HttpStatus.NO_CONTENT` response status!")
-                                .status(HttpStatus.NO_CONTENT));
+        Javalin app = Javalin.create();
 
-        app.get(
-                "/api/test/{param}",
-                ctx -> {
-                    String pathParameter = ctx.pathParam("param");
-                    if(pathParameter==null){
-                        throw new BadRequestResponse();
-                    }
-                    ctx.result(
-                            "Boop : "
-                                    + pathParameter
-                                    + "!");
-                });
+
+        // GAME routes
+        app.get("/games",gc::getGameLists);
+        app.get("/{gameName}",gc::getGame);
+        app.get("/{gameName}/flags",gc::getFlagsLists);
+
+        // runs
+        app.get("/{gameName}/runs",gc::getRunLists);
+        app.post("/{gameName}/create",gc::createRun);
+        app.get("/{gameName}/{id}",gc::getRunState);
+        app.post("/{gameName}/{id}/join",gc::joinRun);
+        app.delete("/{gameName}/{id}/dell",gc::deleteRun);
+        app.post("/{gameName}/{id}/start",gc::startRun);
+        app.put("/{gameName}/{id}/put",gc::putSplit);
+
+        // PLAYER routes
+        app.post("/user/create",pc::createPlayer);
+        app.post("/user",pc::getPlayerState);
+
 
         app.start(PORT);
     }

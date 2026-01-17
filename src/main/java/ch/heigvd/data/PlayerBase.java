@@ -12,7 +12,7 @@ public class PlayerBase {
     private static final int _TOKEN_LENGTH=30;
 
 
-    public static Player createNewPlayer(String username){
+    public static String createNewPlayer(String username){
         Set<Map.Entry<String,Player>> plSet=_players.entrySet();
 
         for (Map.Entry<String,Player> pl : plSet){
@@ -25,7 +25,7 @@ public class PlayerBase {
         String token=generateToken();
         Player newPlayer=new Player(username);
         _players.put(token,newPlayer);
-        return newPlayer;
+        return token;
     }
 
 
@@ -61,4 +61,5 @@ public class PlayerBase {
 
         return null;
     }
+
 }

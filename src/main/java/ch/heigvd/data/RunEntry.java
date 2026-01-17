@@ -10,11 +10,11 @@ public class RunEntry {
     public float startTime;     // moment the run as started (server wise) in milli, only use to estimate run time during the run
     public final ArrayDeque<Split> splits=new ArrayDeque<>();
     public Split actualSplit;       // when a run is finish, the final time will be the actual split time
-    public final GameEntry game;
+    private final GameEntry _game;
 
     public RunEntry(Player player,GameEntry game){
         this.player=player;
-        this.game=game;
+        this._game=game;
     }
 
 
@@ -64,12 +64,26 @@ public class RunEntry {
             actualSplit=newSplit;
         }
 
-        if(newSplit.flagIndex()== game.finalFlagIndex()){
+        if(newSplit.flagIndex()== _game.finalFlagIndex){
             _isFinish=true;
             _isRunning=false;
             actualSplit=newSplit;
         }
-
         return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder("Run entry\nPL : "+player.username);
+        str.append("\nStatue : ").append(_isRunning?"running":(isFinish())?"Finish":"not start");
+        str.append("\nActualTime ").append(TimeUtil.timeToString(TimeUtil.getActualTime(startTime)));
+        str.append("\nActual Split : ").append(actualSplit);
+        str.append("\n\nSplits : ");
+        for (Split split : splits){
+            str.append("\n").append(split);
+        }
+
+
+        return str.toString();
     }
 }
