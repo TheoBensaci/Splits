@@ -3,4 +3,4 @@ services:
       image: ghcr.io/theobensaci/splits:latest
       restart: unless-stopped
       ports:
-        - 80:8000
+        - 8000:8000
