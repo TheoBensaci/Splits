@@ -1,0 +1,6 @@
+services:
+    splits:
+      image:ghcr.io/theobensaci/splits:latest
+    restart: unless-stopped
+    ports:
+      - "8000:80"
