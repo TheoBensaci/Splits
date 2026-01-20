@@ -1,9 +1,9 @@
 package ch.heigvd.data;
 
 public class Player {
-    public String username;
+    public String name;
 
-    public Player(String username){
-        this.username=username;
+    public Player(String name){
+        this.name=name;
     }
 }
