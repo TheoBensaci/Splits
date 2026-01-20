@@ -21,6 +21,9 @@ default port : 8000
 ## Usage
 Once up you can check if the api is alive by GET the racine endpoint, this will return "alive".
 The Api is described in the [API WIKI](/API.md).
+
+You can use the api with [api.splits-run.duckdns.org](api.splits-run.duckdns.org)
+
 ### Main concept
 #### Game
 Game are compose of flags, they will be check point on the run and are use to manage the run.
@@ -117,3 +120,10 @@ Splits/
     ├── .env
     └── docker-compose.yaml
 ```
+
+
+### DNS Record
+splits-run.duckdns.org
+![img.png](img.png)
+
+
