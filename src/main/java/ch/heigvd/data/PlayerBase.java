@@ -13,6 +13,8 @@ public class PlayerBase {
 
 
     public static String createNewPlayer(String username){
+        if(username.isEmpty())return null;
+
         Set<Map.Entry<String,Player>> plSet=_players.entrySet();
 
         for (Map.Entry<String,Player> pl : plSet){
@@ -61,5 +63,6 @@ public class PlayerBase {
 
         return null;
     }
+
 
 }

@@ -53,6 +53,8 @@ public class RunEntry {
             return true;
         }
 
+        System.out.println(splits.getLast().time() +"|"+ newSplit.time());
+
         if(splits.getLast().time() > newSplit.time()){
             return false;
         }

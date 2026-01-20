@@ -1,13 +1,12 @@
 package ch.heigvd.data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 public class GameEntry {
     public final String name;
     public final int finalFlagIndex;
     public final Flag[] flags;
-    private final ArrayList<Run> _runs=new ArrayList<>();
+    private final Map<Integer,Run> _runs=new HashMap<>();
 
     public GameEntry(String name, int finalFlagIndex, Flag... flags) {
         this.name = name;
@@ -18,14 +17,11 @@ public class GameEntry {
 
     public int createNewRun(){
         int index=_runs.size();
-        _runs.add(new Run(this));
+        _runs.put(index,new Run(this,index));
         return index;
     }
 
     public Run getRun(int index){
-        if(index<0 || index>=getNumberOfRun()){
-            return null;
-        }
         return _runs.get(index);
     }
 
@@ -49,6 +45,27 @@ public class GameEntry {
 
     public Split generateSplit(int flagIndex,float time){
         return new Split(flagIndex, getFlag(flagIndex),time);
+    }
+
+
+    public Run[] getRuns(){
+        Run[] runs=new Run[_runs.size()];
+        int i = 0;
+        for (Map.Entry<Integer,Run> r : _runs.entrySet()){
+            runs[i]=r.getValue();
+            i++;
+        }
+        return runs;
+    }
+
+    public boolean deleteRun(int index,String token){
+        if(!_runs.containsKey(index))return false;
+
+        // check if has permition
+        if(!_runs.get(index).ownerToken.equals(token))return false;
+
+        _runs.remove(index);
+        return true;
     }
 
 
