@@ -161,6 +161,7 @@ Example respond
 ```
 #### Status codes
 - `200` OK – Run found
+- `204` No Content – The resource as not been change since last time
 - `404` Not Found – Game or run not found
 
 ### Join a run
@@ -243,14 +244,14 @@ No respond body will be send.
 - `401` Unauthorized - the user is not the owner of the run
 
 
-### Create a player
+### Create a user
 - `POST /user/create`
 Create a new user
 ##### Request
 The request require the following body
 ```JSON
 {
-  "token": {user token}
+  "name": {name requested}
 }
 ```
 ##### Respond
@@ -266,7 +267,7 @@ The respond will containe the token of the user, don't lose it. There will be no
 - `500` Internal Server Error – Server error
 
 
-### Get player data
+### Get user data
 - `GET /user?username={username}`
 
 Returns data of a specific user
@@ -285,7 +286,7 @@ Example respond
 - `500` Internal Server Error – Server error
 
 
-### Change player username
+### Change user username
 - `PATCH /user/change`
 change the username of a user.
 ##### Request
