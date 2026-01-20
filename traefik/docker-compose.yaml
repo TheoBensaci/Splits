@@ -1,0 +1,22 @@
+services:
+    splits:
+      image: ghcr.io/theobensaci/splits:latest
+      container_name: split
+      restart: unless-stopped
+      networks:
+        - traefik_network
+      labels:
+        # Enable Traefik for this container
+        - traefik.enable=true
+
+        # Router configuration for the API
+        - traefik.http.routers.api.rule=Host(`${APP_FQDN}`)
+        - traefik.http.routers.api.entrypoints=https
+
+        # Service configuration (target port 8080)
+        - traefik.http.services.api.loadbalancer.server.port=8000
+
+networks:
+  traefik_network:
+    name: traefik_network
+    external: true
