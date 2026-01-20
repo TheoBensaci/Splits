@@ -1,14 +1,20 @@
 package ch.heigvd.data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Run {
+    public transient LocalDateTime lastUpdate;
     public final List<RunEntry> entries=new ArrayList<>();
     private final GameEntry _gameEntry;
+    public final int id;
+    public transient String ownerToken="";
 
-    public Run(GameEntry gameEntry){
+    public Run(GameEntry gameEntry,int id){
         this._gameEntry=gameEntry;
+        lastUpdate=LocalDateTime.now();
+        this.id=id;
     }
 
 
@@ -48,17 +54,23 @@ public class Run {
         if(pl==null)return false;
         for (RunEntry ent : entries){
             if(ent.player.username.equals(pl.username)){
-                return ent.putSplit(newSplit);
+                if(ent.putSplit(newSplit)) {
+                    lastUpdate=LocalDateTime.now();
+                    return true;
+                }
+                return false;
             }
         }
         return false;
     }
 
-    public boolean startRun(){
+    public boolean startRun(String token){
         if(isRunning() || isFinish())return false;
+        if(entries.isEmpty() ||!ownerToken.equals(token))return false;
         for (RunEntry ent : entries){
             ent.startRun();
         }
+        lastUpdate=LocalDateTime.now();
         return true;
     }
 
@@ -72,6 +84,10 @@ public class Run {
             }
         }
         entries.add(new RunEntry(pl,_gameEntry));
+        // if no owner
+        if(ownerToken.equals(""))ownerToken=token;
+
+        lastUpdate=LocalDateTime.now();
         return true;
     }
 

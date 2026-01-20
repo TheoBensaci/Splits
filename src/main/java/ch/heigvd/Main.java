@@ -1,14 +1,12 @@
 package ch.heigvd;
 
 import ch.heigvd.data.*;
-import ch.heigvd.web.GameController;
-import ch.heigvd.web.PlayerController;
+import ch.heigvd.api.GameController;
+import ch.heigvd.api.PlayerController;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.staticfiles.Location;
 
-import static io.javalin.apibuilder.ApiBuilder.*;
+import java.time.LocalDateTime;
 
 public class Main {
 
@@ -38,26 +36,64 @@ public class Main {
                 }
         );*/
 
-        Javalin app = Javalin.create();
+        Javalin app = Javalin.create(config -> {
+            config.bundledPlugins.enableCors(cors -> {
+                cors.addRule(it -> {
+                    it.anyHost();
+                });
+            });
+            config.validation.register(LocalDateTime.class, LocalDateTime::parse);
+        });
+
+        app.before(ctx -> {
+            ctx.header("Access-Control-Allow-Origin","*");
+        });
+
+        app.get("/",context -> {
+            context.status(HttpStatus.OK).json("alive");
+        });
 
 
         // GAME routes
-        app.get("/games",gc::getGameLists);
-        app.get("/{gameName}",gc::getGame);
-        app.get("/{gameName}/flags",gc::getFlagsLists);
 
-        // runs
-        app.get("/{gameName}/runs",gc::getRunLists);
-        app.post("/{gameName}/create",gc::createRun);
-        app.get("/{gameName}/{id}",gc::getRunState);
-        app.post("/{gameName}/{id}/join",gc::joinRun);
-        app.delete("/{gameName}/{id}/dell",gc::deleteRun);
-        app.post("/{gameName}/{id}/start",gc::startRun);
-        app.put("/{gameName}/{id}/put",gc::putSplit);
+        // get a list of all avaliable game
+        app.get("/games",gc::getGameLists);
+
+        // get data from the game {gameName}
+        app.get("/game/{gameName}",gc::getGame);
+
+        // ### RUN
+
+        // get the runs list of the game {gameName}
+        app.get("/game/{gameName}/runs",gc::getRunLists);
+
+        // create a new runs of the game {gameName}
+        app.post("/game/{gameName}/create",gc::createRun);
+
+        // get data from the run {id} of the game {gameName}
+        app.get("/game/{gameName}/{id}",gc::getRunState);
+
+        // join the run {id} of the game {gameName}
+        app.post("/game/{gameName}/{id}/join",gc::joinRun);
+
+        // start the run {id} of the game {gameName}
+        app.post("/game/{gameName}/{id}/start",gc::startRun);
+
+        // post a new split to the run {id} of the game {gameName}
+        app.post("/game/{gameName}/{id}/put",gc::postSplit);
+
+        // delete the run {id} of the game {gameName}
+        app.delete("/game/{gameName}/{id}",gc::deleteRun);
 
         // PLAYER routes
+        // create a new player
         app.post("/user/create",pc::createPlayer);
-        app.post("/user",pc::getPlayerState);
+
+        // get a user data
+        app.get("/user",pc::getPlayerState);
+
+        // change the username of a player
+        app.patch("/user/change",pc::changePlayerName);
 
 
         app.start(PORT);

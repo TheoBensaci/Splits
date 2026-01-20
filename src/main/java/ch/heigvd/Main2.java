@@ -32,7 +32,7 @@ public class Main2 {
         System.out.println("\nCreate new entry");
         System.out.println(run.createRunEntry(token));
         System.out.println(run.getRunEntry(pl.username));
-        defaultGame.getRun(index).startRun();
+        defaultGame.getRun(index).startRun(pl.username);
 
         System.out.println("\nStart run ");
         System.out.println(run.getRunEntry(pl.username));
