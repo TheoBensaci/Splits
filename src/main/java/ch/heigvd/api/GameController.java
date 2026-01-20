@@ -81,9 +81,7 @@ public class GameController {
 
         System.out.println(id);
 
-        if(!r.createRunEntry(pl.token())){
-            throw new ConflictResponse();
-        }
+        r.createRunEntry(pl.token());
 
         class A{
             public int runId = id;
@@ -97,6 +95,11 @@ public class GameController {
 
         // check body
         userData pl = PlayerController.checkBodyToken(ctx,ctx.bodyValidator(TokenData.class).get());
+
+        if(r.isRunning() || r.isFinish()){
+            throw new BadRequestResponse();
+        }
+
         if(!r.createRunEntry(pl.token())){
             throw new ConflictResponse();
         }
