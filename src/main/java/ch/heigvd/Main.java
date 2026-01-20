@@ -12,39 +12,13 @@ public class Main {
   public static int PORT = 8000;
 
   public static void main(String[] args) {
-    /*
-    String token = PlayerBase.createNewPlayer("test");
-    int index = defaultGame.createNewRun();
-    Run run = defaultGame.getRun(index);
-    run.createRunEntry(token);
-    defaultGame.getRun(index).startRun();
-    run.putSplit(token,0, (float)(System.currentTimeMillis()+66000f));
-
-    run.putSplit(token,1, (float)(System.currentTimeMillis()+76000f));
-
-    run.putSplit(token,5, (float)(System.currentTimeMillis()+86000f));
-
-
-    run.putSplit(token,6, (float)(System.currentTimeMillis()+106000f));*/
 
     GameController gc = new GameController();
     PlayerController pc = new PlayerController();
-    /*
-    Javalin app = Javalin.create(config -> {
-                config.staticFiles.add("/public", Location.CLASSPATH);
-            }
-    );*/
 
     Javalin app =
         Javalin.create(
             config -> {
-              config.bundledPlugins.enableCors(
-                  cors -> {
-                    cors.addRule(
-                        it -> {
-                          it.anyHost();
-                        });
-                  });
               config.validation.register(LocalDateTime.class, LocalDateTime::parse);
             });
 
